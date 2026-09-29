@@ -446,6 +446,7 @@ func startNgrok(binPath string, port int, token, domain string) (*exec.Cmd, erro
 		"http", fmt.Sprintf("%d", port),
 		"--authtoken", token,
 		"--log", "stdout",
+		"--log-level", "warn",
 	}
 	if domain != "" {
 		args = append(args, "--domain", domain)
