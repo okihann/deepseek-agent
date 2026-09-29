@@ -439,10 +439,10 @@ func ensureNgrok(dir string) (string, error) {
 // startNgrok launches `ngrok http <port> --authtoken ... [--domain ...]`.
 func startNgrok(binPath string, port int, token, domain string) (*exec.Cmd, error) {
 	args := []string{
+		"--web-addr", ngrokWebAddr,
 		"http", fmt.Sprintf("%d", port),
 		"--authtoken", token,
 		"--log", "stdout",
-		"--web-addr", ngrokWebAddr,
 	}
 	if domain != "" {
 		args = append(args, "--domain", domain)
