@@ -100,6 +100,10 @@ var (
 	ngrokCmd *exec.Cmd
 )
 
+// ngrok's local inspection API. Default port is 4040 and is not
+// configurable via CLI flag in ngrok v3 -- only via config file.
+const ngrokWebAddr = "127.0.0.1:4040"
+
 // -------- HTTP helpers --------
 
 func cors(w http.ResponseWriter) {
@@ -273,8 +277,6 @@ func handleExec(w http.ResponseWriter, r *http.Request) {
 
 // -------- ngrok --------
 
-const ngrokWebAddr = "127.0.0.1:4041"
-
 func ngrokBinaryName() string {
 	if runtime.GOOS == "windows" {
 		return "ngrok.exe"
@@ -437,9 +439,10 @@ func ensureNgrok(dir string) (string, error) {
 }
 
 // startNgrok launches `ngrok http <port> --authtoken ... [--domain ...]`.
+// Note: ngrok v3 has no --web-addr flag; the inspection UI is fixed at
+// 127.0.0.1:4040 unless configured via a config file. We use the default.
 func startNgrok(binPath string, port int, token, domain string) (*exec.Cmd, error) {
 	args := []string{
-		"--web-addr", ngrokWebAddr,
 		"http", fmt.Sprintf("%d", port),
 		"--authtoken", token,
 		"--log", "stdout",
